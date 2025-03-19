@@ -11,3 +11,7 @@ quarkus:
         enable: true
   native:
     enabled: false
+    builder-image: "quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java21"
+  jandex:
+    index-dependency-jars: false
+    index-jars: false

@@ -29,6 +29,27 @@ tasks.named("quarkusBuild") {
     enabled = false
 }
 
-tasks.named("build") {
-    dependsOn("quarkusDependencyManagement", "jar")
+// Disable Quarkus native tasks
+tasks.matching { task -> task.name.contains("Native") }.configureEach {
+    enabled = false
+}
+
+// Disable Quarkus app parts build
+tasks.named("quarkusAppPartsBuild") {
+    enabled = false
+}
+
+// Configure Quarkus to disable Jandex indexing
+tasks.withType<JavaExec> {
+    systemProperties["quarkus.jandex.index-dependency-jars"] = "false"
+    systemProperties["quarkus.jandex.index-jars"] = "false"
+}
+
+// Clean the problematic index files before tests
+tasks.named("test") {
+    doFirst {
+        delete(fileTree("build/classes/kotlin/test") {
+            include("**/*.idx")
+        })
+    }
 }

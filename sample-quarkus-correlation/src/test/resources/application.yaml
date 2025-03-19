@@ -8,3 +8,7 @@ quarkus:
       format: "%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %-5p %H -- [%X{traceId}/%X{spanId}/%X{correlationId}] - [%c{3.}] (%t-%t{id}) %s%e%n"
   native:
     enabled: false
+    builder-image: "quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java21"
+  jandex:
+    index-dependency-jars: false
+    index-jars: false

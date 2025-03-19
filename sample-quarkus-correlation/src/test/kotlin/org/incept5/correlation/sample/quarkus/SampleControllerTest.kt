@@ -6,7 +6,7 @@ import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
-import com.velostone.correlation.CorrelationId
+import org.incept5.correlation.CorrelationId
 import org.junit.jupiter.api.Assertions.assertNotNull
 
 @QuarkusTest
@@ -21,7 +21,7 @@ class SampleControllerTest {
         
         // Call the endpoint
         given()
-            .when().get("/hello")
+            .`when`().get("/hello")
             .then()
             .statusCode(200)
             .body(containsString("Hello from Quarkus with Correlation ID!"))
@@ -42,7 +42,7 @@ class SampleControllerTest {
         // Call the endpoint with a custom correlation ID
         given()
             .header("X-Correlation-ID", customCorrelationId)
-            .when().get("/hello")
+            .`when`().get("/hello")
             .then()
             .statusCode(200)
             .body(containsString("Hello from Quarkus with Correlation ID!"))

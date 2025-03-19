@@ -1,0 +1,24 @@
+{
+  "spec": "Fix this error:\n\nCaused by: java.lang.RuntimeException: org.jboss.jandex.UnsupportedVersion: Can't read Jandex index from /Users/admin/Dev/incept5/starter-libraries/correlation/sample-quarkus-correlation/build/classes/kotlin/test/SampleControllerTest.idx: Can't read index version 11; this IndexReader only supports index versions 2-3,6-10",
+  "commitMessage": "Disable Quarkus native tasks, app parts build, and Jandex indexing for improved test performance.\n\n\n",
+  "stats": {
+    "inputTokens": 185150,
+    "cacheWriteTokens": 6574,
+    "cacheReadTokens": 157776,
+    "outputTokens": 5205,
+    "totalTokens": null,
+    "cost": 0.47514375000000003,
+    "currency": "gbp",
+    "processingMillis": 155913,
+    "git": {
+      "filesChanged": 5,
+      "insertions": 37,
+      "deletions": 8,
+      "linesChanged": 37,
+      "testFilesChanged": 2,
+      "testInsertions": 8,
+      "testDeletions": 4,
+      "testLinesChanged": 8
+    }
+  }
+}
