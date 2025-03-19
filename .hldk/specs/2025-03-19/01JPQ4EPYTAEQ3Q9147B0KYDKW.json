@@ -1,0 +1,24 @@
+{
+  "spec": "use java21 and ensure the build steps include a publish jar files so that local build will publish to the local maven repository and the remote build uses the circleci config to publish the artefacts to jitpack",
+  "commitMessage": "Update to Java 21 and configure publishing to local Maven and JitPack",
+  "stats": {
+    "inputTokens": 87427,
+    "cacheWriteTokens": 6329,
+    "cacheReadTokens": 113922,
+    "outputTokens": 3412,
+    "totalTokens": null,
+    "cost": 0.23509575000000002,
+    "currency": "gbp",
+    "processingMillis": 91821,
+    "git": {
+      "filesChanged": 3,
+      "insertions": 36,
+      "deletions": 8,
+      "linesChanged": 36,
+      "testFilesChanged": 0,
+      "testInsertions": 0,
+      "testDeletions": 0,
+      "testLinesChanged": 0
+    }
+  }
+}

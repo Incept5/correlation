@@ -18,7 +18,7 @@ if (System.getenv("JITPACK") == "true") {
 
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
-    id("org.jetbrains.kotlin.jvm") version "1.9.0"
+    alias(libs.plugins.kotlin.jvm)
 
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
@@ -40,7 +40,7 @@ testing {
         // Configure the built-in test suite
         val test by getting(JvmTestSuite::class) {
             // Use Kotlin Test test framework
-            useKotlinTest("1.9.0")
+            useKotlinTest(libs.versions.kotlin.get())
         }
     }
 }
@@ -48,10 +48,19 @@ testing {
 // Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
     withJavadocJar()
     withSourcesJar()
+}
+
+// Configure Kotlin to target JVM 21
+kotlin {
+    jvmToolchain(21)
+    
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+    }
 }
 
 publishing {
@@ -77,7 +86,7 @@ publishing {
                     developer {
                         id.set("incept5")
                         name.set("Incept5")
-                        email.set("info@incept5.org")
+                        email.set("info@incept5.com")
                     }
                 }
             }
@@ -93,4 +102,9 @@ publishing {
 // For JitPack compatibility
 tasks.register("install") {
     dependsOn(tasks.named("publishToMavenLocal"))
+}
+
+// Always publish to local Maven repository after build for local development
+tasks.named("build") {
+    finalizedBy(tasks.named("publishToMavenLocal"))
 }

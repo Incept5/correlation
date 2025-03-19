@@ -6,7 +6,7 @@ orbs:
 jobs:
   build-and-test:
     docker:
-      - image: cimg/openjdk:17.0
+      - image: cimg/openjdk:21.0
     steps:
       - checkout
       - gradle/with_cache:
@@ -22,7 +22,7 @@ jobs:
 
   publish-to-jitpack:
     docker:
-      - image: cimg/openjdk:17.0
+      - image: cimg/openjdk:21.0
     steps:
       - checkout
       - run:
@@ -50,6 +50,18 @@ jobs:
             echo "JitPack build triggered for commit ${COMMIT_HASH}"
             echo "Artifacts will be available at: https://jitpack.io/#com.github.incept5/correlation/${COMMIT_HASH}"
             echo "Once the build is complete, they will also be available at: https://jitpack.io/#com.github.incept5/correlation/1.0.${BUILD_NUMBER}"
+            
+            # Wait for JitPack to process the build (optional)
+            echo "Waiting for JitPack to process the build..."
+            sleep 60
+            
+            # Verify the build status
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://jitpack.io/com/github/incept5/correlation/${COMMIT_HASH}/correlation-${COMMIT_HASH}.pom")
+            if [ "$HTTP_STATUS" -eq 200 ]; then
+              echo "JitPack build successful!"
+            else
+              echo "JitPack build may still be in progress. Check status at: https://jitpack.io/com/github/incept5/correlation/${COMMIT_HASH}"
+            fi
 
 workflows:
   version: 2

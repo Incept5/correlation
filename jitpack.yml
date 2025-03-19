@@ -1,6 +1,8 @@
 jdk:
-  - openjdk17
+  - openjdk21
 before_install:
   - ./gradlew clean
 install:
   - ./gradlew build publishToMavenLocal -Pgroup=com.github.incept5
+  - echo "Published artifacts to local Maven repository"
+  - find ~/.m2/repository -name "correlation*" | sort
