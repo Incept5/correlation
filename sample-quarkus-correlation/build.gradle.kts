@@ -5,7 +5,9 @@ plugins {
 
 dependencies {
     implementation(project(":"))
-    
+    implementation(enforcedPlatform(libs.quarkus.bom))
+
+
     implementation(libs.quarkus.resteasy)
     implementation(libs.quarkus.resteasy.jackson)
     implementation(libs.quarkus.kotlin)

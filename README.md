@@ -55,6 +55,66 @@ This project uses CircleCI for continuous integration. When commits are pushed t
 
 The latest build status can be seen on the CircleCI dashboard.
 
+## Sample Quarkus Implementation
+
+The `sample-quarkus-correlation` module demonstrates how to use the CorrelationId library in a Quarkus application:
+
+### JAX-RS Filter for Correlation ID
+
+The sample includes a `CorrelationIdFilter` that implements `ContainerRequestFilter` to:
+
+1. Extract the correlation ID from the `X-Correlation-ID` header if present
+2. Generate a new correlation ID if none exists
+3. Set the correlation ID in the thread-local context using `CorrelationId.setId()`
+4. Add the correlation ID back to the request headers
+
+```kotlin
+@Provider
+class CorrelationIdFilter : ContainerRequestFilter {
+    override fun filter(requestContext: ContainerRequestContext) {
+        // Get or create a new correlation ID
+        val correlationId = requestContext.headers.getFirst("X-Correlation-ID") ?: CorrelationId.getId()
+        
+        // Set the correlation ID in the thread local context
+        CorrelationId.setId(correlationId)
+        
+        // Add or update the correlation ID header in the request
+        requestContext.headers.putSingle("X-Correlation-ID", correlationId)
+    }
+}
+```
+
+### Logging Configuration
+
+The sample configures Quarkus logging to include the correlation ID in log messages:
+
+```yaml
+quarkus:
+  log:
+    console:
+      format: "%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %-5p %H -- [%X{traceId}/%X{spanId}/%X{correlationId}] - [%c{3.}] (%t-%t{id}) %s%e%n"
+```
+
+This format includes `%X{correlationId}` to display the correlation ID from the MDC in each log entry.
+
+### Usage in Controllers
+
+Once the filter is in place, any controller in the application will automatically have access to the correlation ID in logs:
+
+```kotlin
+@Path("/hello")
+class SampleController {
+    private val logger = LoggerFactory.getLogger(SampleController::class.java)
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    fun hello(): String {
+        logger.info("Hello endpoint invoked")  // This log will include the correlation ID
+        return "Hello from Quarkus with Correlation ID!"
+    }
+}
+```
+
 ## Implement an MDCAdapter
 
 To implement an MDCAdapter you need to implement the following methods:
