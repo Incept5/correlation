@@ -1,4 +1,4 @@
-package com.velostone.correlation
+package org.incept5.correlation
 
 /**
  * MDCAdaptor implementation that uses SLF4J's MDC.

@@ -12,3 +12,6 @@ quarkus:
   jandex:
     index-dependency-jars: false
     index-jars: false
+  index-dependency: false
+  test:
+    native-image-profile: false

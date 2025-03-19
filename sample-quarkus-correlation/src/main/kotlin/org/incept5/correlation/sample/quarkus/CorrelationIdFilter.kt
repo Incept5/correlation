@@ -3,7 +3,7 @@ package org.incept5.correlation.sample.quarkus
 import jakarta.ws.rs.container.ContainerRequestContext
 import jakarta.ws.rs.container.ContainerRequestFilter
 import jakarta.ws.rs.ext.Provider
-import com.velostone.correlation.CorrelationId
+import org.incept5.correlation.CorrelationId
 
 @Provider
 class CorrelationIdFilter : ContainerRequestFilter {

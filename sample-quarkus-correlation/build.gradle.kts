@@ -45,11 +45,44 @@ tasks.withType<JavaExec> {
     systemProperties["quarkus.jandex.index-jars"] = "false"
 }
 
+// Add Quarkus configuration to disable Jandex indexing
+tasks.named("processResources") {
+    doFirst {
+        file("src/main/resources/application.properties").appendText("""
+            quarkus.index-dependency=false
+            quarkus.jandex.index-dependency-jars=false
+            quarkus.jandex.index-jars=false
+        """.trimIndent())
+    }
+}
+
 // Clean the problematic index files before tests
 tasks.named("test") {
-    doFirst {
+    dependsOn("cleanTestIndexFiles")
+}
+
+// Create a dedicated task to clean index files
+tasks.register("cleanTestIndexFiles") {
+    doLast {
         delete(fileTree("build/classes/kotlin/test") {
             include("**/*.idx")
         })
+        delete(fileTree("build/classes/java/test") {
+            include("**/*.idx")
+        })
+    }
+}
+
+// Also clean index files before compiling tests
+tasks.named("compileTestKotlin") {
+    dependsOn("cleanTestIndexFiles")
+}
+
+// Add Quarkus test configuration
+tasks.named("test") {
+    doFirst {
+        System.setProperty("quarkus.jandex.index-dependency-jars", "false")
+        System.setProperty("quarkus.jandex.index-jars", "false")
+        System.setProperty("quarkus.index-dependency", "false")
     }
 }

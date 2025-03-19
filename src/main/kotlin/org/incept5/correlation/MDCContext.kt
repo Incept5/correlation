@@ -1,4 +1,4 @@
-package com.velostone.correlation
+package org.incept5.correlation
 
 /**
  * You can add other MDC adaptors to this context and then all MDC operations will be delegated to

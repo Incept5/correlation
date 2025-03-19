@@ -1,4 +1,4 @@
-package com.velostone.correlation
+package org.incept5.correlation
 
 /**
  * Mapped Diagnostic Context (MDC) handler interface.
