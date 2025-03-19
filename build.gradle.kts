@@ -8,9 +8,14 @@
 
 
 // For local builds, use 0-SNAPSHOT. For CI builds, use the build number from CircleCI
+// If a specific version is provided (e.g., from JitPack), use that instead
+val providedVersion = findProperty("version") as? String
 val buildNumber = findProperty("buildNumber") as? String ?: "0-SNAPSHOT"
-version = "1.0.$buildNumber"
-group = "com.github.incept5"
+version = providedVersion ?: "1.0.$buildNumber"
+
+// Always ensure we have a valid group ID
+val providedGroup = findProperty("group") as? String
+group = if (providedGroup.isNullOrBlank()) "com.github.incept5" else providedGroup
 
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
