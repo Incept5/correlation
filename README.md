@@ -115,6 +115,156 @@ class SampleController {
 }
 ```
 
+## Spring Boot Implementation
+
+Here's a suggested implementation for using the CorrelationId library in a Spring Boot application:
+
+### Filter Implementation
+
+Create a filter that will intercept all HTTP requests and handle the correlation ID:
+
+```kotlin
+import jakarta.servlet.FilterChain
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import org.incept5.correlation.CorrelationId
+import org.springframework.stereotype.Component
+import org.springframework.web.filter.OncePerRequestFilter
+
+@Component
+class CorrelationIdFilter : OncePerRequestFilter() {
+
+    companion object {
+        const val CORRELATION_ID_HEADER = "X-Correlation-ID"
+    }
+
+    override fun doFilterInternal(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        filterChain: FilterChain
+    ) {
+        try {
+            // Extract correlation ID from header or generate a new one
+            val correlationId = request.getHeader(CORRELATION_ID_HEADER) ?: CorrelationId.getId()
+            
+            // Set the correlation ID in the thread-local context
+            CorrelationId.setId(correlationId)
+            
+            // Add the correlation ID to the response headers
+            response.addHeader(CORRELATION_ID_HEADER, correlationId)
+            
+            // Continue with the filter chain
+            filterChain.doFilter(request, response)
+        } finally {
+            // Clear the correlation ID after the request is processed
+            CorrelationId.clear()
+        }
+    }
+}
+```
+
+### Filter Registration
+
+Register the filter in your Spring Boot application:
+
+```kotlin
+import org.springframework.boot.web.servlet.FilterRegistrationBean
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.core.Ordered
+
+@Configuration
+class WebConfig {
+
+    @Bean
+    fun correlationIdFilter(): FilterRegistrationBean<CorrelationIdFilter> {
+        val registrationBean = FilterRegistrationBean<CorrelationIdFilter>()
+        registrationBean.filter = CorrelationIdFilter()
+        registrationBean.order = Ordered.HIGHEST_PRECEDENCE
+        return registrationBean
+    }
+}
+```
+
+### Logging Configuration
+
+Configure Spring Boot logging to include the correlation ID in log messages by updating your `application.yml` or `application.properties`:
+
+```yaml
+# application.yml
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%X{correlationId}] - %msg%n"
+```
+
+Or in properties format:
+
+```properties
+# application.properties
+logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%X{correlationId}] - %msg%n
+```
+
+### Usage in Controllers
+
+Once the filter is in place, any controller in the application will automatically have access to the correlation ID in logs:
+
+```kotlin
+import org.slf4j.LoggerFactory
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RestController
+
+@RestController
+class HelloController {
+
+    private val logger = LoggerFactory.getLogger(HelloController::class.java)
+
+    @GetMapping("/hello")
+    fun hello(): String {
+        logger.info("Hello endpoint invoked")  // This log will include the correlation ID
+        return "Hello from Spring Boot with Correlation ID!"
+    }
+}
+```
+
+### WebClient Support (Optional)
+
+If you're using Spring WebClient for outgoing HTTP requests, you can propagate the correlation ID to downstream services:
+
+```kotlin
+import org.incept5.correlation.CorrelationId
+import org.springframework.stereotype.Component
+import org.springframework.web.reactive.function.client.ClientRequest
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction
+import org.springframework.web.reactive.function.client.ExchangeFunction
+import org.springframework.web.reactive.function.client.WebClient
+import reactor.core.publisher.Mono
+
+@Component
+class WebClientConfig {
+
+    companion object {
+        const val CORRELATION_ID_HEADER = "X-Correlation-ID"
+    }
+
+    @Bean
+    fun webClient(builder: WebClient.Builder): WebClient {
+        return builder
+            .filter(correlationIdFilter())
+            .build()
+    }
+
+    private fun correlationIdFilter(): ExchangeFilterFunction {
+        return ExchangeFilterFunction { request, next ->
+            val correlationId = CorrelationId.getId()
+            val filteredRequest = ClientRequest.from(request)
+                .header(CORRELATION_ID_HEADER, correlationId)
+                .build()
+            next.exchange(filteredRequest)
+        }
+    }
+}
+```
+
 ## Implement an MDCAdapter
 
 To implement an MDCAdapter you need to implement the following methods:
