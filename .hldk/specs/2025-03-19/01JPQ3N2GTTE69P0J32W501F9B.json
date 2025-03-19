@@ -1,0 +1,24 @@
+{
+  "spec": "add circleci config to the module to allow git to kick off a build when commits are pushed to main\nas the end of the build the artefacts should then be published to jitpack",
+  "commitMessage": "Add CircleCI configuration for CI/CD with JitPack integration\n\n- Added CircleCI config to build and test on all branches\n- Added publish job that runs only on the main branch\n- Updated JitPack configuration to work with CircleCI\n- Added CI/CD information to README\n- Modified build.gradle.kts to handle JitPack environment",
+  "stats": {
+    "inputTokens": 97444,
+    "cacheWriteTokens": 6306,
+    "cacheReadTokens": 44142,
+    "outputTokens": 2389,
+    "totalTokens": null,
+    "cost": 0.24612525000000002,
+    "currency": "gbp",
+    "processingMillis": 46084,
+    "git": {
+      "filesChanged": 4,
+      "insertions": 80,
+      "deletions": 2,
+      "linesChanged": 80,
+      "testFilesChanged": 0,
+      "testInsertions": 0,
+      "testDeletions": 0,
+      "testLinesChanged": 0
+    }
+  }
+}

@@ -46,6 +46,15 @@ dependencies {
 </dependencies>
 ```
 
+## Continuous Integration
+
+This project uses CircleCI for continuous integration. When commits are pushed to the main branch:
+
+1. CircleCI automatically builds and tests the project
+2. If tests pass, it publishes the artifacts to JitPack with version `1.0.{build-number}`
+
+The latest build status can be seen on the CircleCI dashboard.
+
 ## Implement an MDCAdapter
 
 To implement an MDCAdapter you need to implement the following methods:

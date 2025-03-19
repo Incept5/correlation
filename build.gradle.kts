@@ -6,10 +6,15 @@
  * This project uses @Incubating APIs which are subject to change.
  */
 
-// For local builds, use 0-SNAPSHOT. For CI builds, use the build number
+// For local builds, use 0-SNAPSHOT. For CI builds, use the build number from CircleCI
 val buildNumber = findProperty("buildNumber") as? String ?: "0-SNAPSHOT"
 version = "1.0.$buildNumber"
 group = "org.incept5"
+
+// For JitPack, we need to set the group ID to com.github.incept5 when building on JitPack
+if (System.getenv("JITPACK") == "true") {
+    group = "com.github.incept5"
+}
 
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.

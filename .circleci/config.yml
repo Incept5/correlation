@@ -1,0 +1,64 @@
+version: 2.1
+
+orbs:
+  gradle: circleci/gradle@3.0.0
+
+jobs:
+  build-and-test:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - checkout
+      - gradle/with_cache:
+          steps:
+            - run:
+                name: Build and Test
+                command: ./gradlew clean build
+      - store_test_results:
+          path: build/test-results
+      - store_artifacts:
+          path: build/reports
+          destination: reports
+
+  publish-to-jitpack:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - checkout
+      - run:
+          name: Set Build Number
+          command: |
+            echo "export BUILD_NUMBER=${CIRCLE_BUILD_NUM}" >> $BASH_ENV
+            source $BASH_ENV
+      - gradle/with_cache:
+          steps:
+            - run:
+                name: Build with Build Number
+                command: ./gradlew clean build -PbuildNumber=${BUILD_NUMBER}
+            - run:
+                name: Publish to Local Maven Repository
+                command: ./gradlew publishToMavenLocal -PbuildNumber=${BUILD_NUMBER}
+      - run:
+          name: Trigger JitPack Build
+          command: |
+            # Get the current commit hash
+            COMMIT_HASH=$(git rev-parse HEAD)
+            
+            # Trigger JitPack build by making a request to the JitPack URL
+            curl -s "https://jitpack.io/com/github/incept5/correlation/${COMMIT_HASH}/correlation-${COMMIT_HASH}.pom" || true
+            
+            echo "JitPack build triggered for commit ${COMMIT_HASH}"
+            echo "Artifacts will be available at: https://jitpack.io/#com.github.incept5/correlation/${COMMIT_HASH}"
+            echo "Once the build is complete, they will also be available at: https://jitpack.io/#com.github.incept5/correlation/1.0.${BUILD_NUMBER}"
+
+workflows:
+  version: 2
+  build-test-publish:
+    jobs:
+      - build-and-test
+      - publish-to-jitpack:
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              only: main
