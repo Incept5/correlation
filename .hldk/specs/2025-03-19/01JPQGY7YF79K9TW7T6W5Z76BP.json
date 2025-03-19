@@ -1,0 +1,24 @@
+{
+  "spec": "add a sample-quarkus-correlation module to the project\nThis should have a class that adds a filter to Quarkus:\n\n\nimport jakarta.ws.rs.container.ContainerRequestContext\nimport jakarta.ws.rs.container.ContainerRequestFilter\nimport jakarta.ws.rs.ext.Provider\nimport org.incept5.correlation.CorrelationId\n\n@Provider\nclass CorrelationIdFilter : ContainerRequestFilter {\n\n    override fun filter(requestContext: ContainerRequestContext) {\n        // Get or create a new correlation ID\n        val correlationId = requestContext.headers.getFirst(\"X-Correlation-ID\") ?: CorrelationId.getId()\n        \n        // Set the correlation ID in the thread local context\n        CorrelationId.setId(correlationId)\n        \n        // Add or update the correlation ID header in the request\n        requestContext.headers.putSingle(\"X-Correlation-ID\", correlationId)\n    }\n}\n\nThe sample quarkus app should also have the following in the application.yaml:\nquarkus.log.level=INFO\nquarkus.log.category.\"org.incept5\".level=DEBUG\n\nquarkus.log.console.format=%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %-5p %H -- [%X{traceId}/%X{spanId}/%X{correlationId}] - [%c{3.}] (%t-%t{id}) %s%e%n\n\nquarkus.log.json.console.enable=true\n\nAdd a controller class that has a simple GET method and a log statement to show in the logs that the controller was invoked\n\nAdd a test in the sample-quarkus-correlation project that asserts that a CorrelationId is present in the logs when the endpoint is invoked",
+  "commitMessage": "Update dependencies and add Quarkus sample project \n\n\n",
+  "stats": {
+    "inputTokens": 159233,
+    "cacheWriteTokens": 6329,
+    "cacheReadTokens": 151896,
+    "outputTokens": 5944,
+    "totalTokens": null,
+    "cost": 0.42514425,
+    "currency": "gbp",
+    "processingMillis": 164769,
+    "git": {
+      "filesChanged": 9,
+      "insertions": 168,
+      "deletions": 2,
+      "linesChanged": 168,
+      "testFilesChanged": 2,
+      "testInsertions": 65,
+      "testDeletions": 0,
+      "testLinesChanged": 65
+    }
+  }
+}

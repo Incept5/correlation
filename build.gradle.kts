@@ -6,6 +6,7 @@
  * This project uses @Incubating APIs which are subject to change.
  */
 
+
 // For local builds, use 0-SNAPSHOT. For CI builds, use the build number from CircleCI
 val buildNumber = findProperty("buildNumber") as? String ?: "0-SNAPSHOT"
 version = "1.0.$buildNumber"
@@ -52,10 +53,11 @@ java {
 // Configure Kotlin to target JVM 21
 kotlin {
     jvmToolchain(21)
-    
+
     compilerOptions {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
     }
+
 }
 
 publishing {

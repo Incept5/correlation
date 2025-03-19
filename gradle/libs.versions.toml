@@ -3,6 +3,8 @@
 # dependency versions
 slf4j = "2.0.10"
 logback = "1.4.14"
+quarkus = "3.6.4"
+restassured = "5.3.2"
 
 # plugin versions
 kotlin = "1.9.21"
@@ -16,8 +18,16 @@ logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "lo
 # kotlin
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
 
+# quarkus
+quarkus-resteasy = { module = "io.quarkus:quarkus-resteasy", version.ref = "quarkus" }
+quarkus-resteasy-jackson = { module = "io.quarkus:quarkus-resteasy-jackson", version.ref = "quarkus" }
+quarkus-kotlin = { module = "io.quarkus:quarkus-kotlin", version.ref = "quarkus" }
+quarkus-junit5 = { module = "io.quarkus:quarkus-junit5", version.ref = "quarkus" }
+rest-assured = { module = "io.rest-assured:rest-assured", version.ref = "restassured" }
+
 [plugins]
 
 # kotlin
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+quarkus = { id = "io.quarkus", version.ref = "quarkus" }

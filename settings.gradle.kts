@@ -1,4 +1,5 @@
 rootProject.name = "correlation"
+include("sample-quarkus-correlation")
 
 pluginManagement {
     repositories {
