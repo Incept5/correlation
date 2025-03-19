@@ -1,13 +1,13 @@
 [versions]
 
 # dependency versions
-slf4j = "2.0.10"
-logback = "1.4.14"
-quarkus = "3.6.4"
-restassured = "5.3.2"
+slf4j = "2.0.17"
+logback = "1.5.18"
+quarkus = "3.19.4"
+restassured = "5.5.1"
 
 # plugin versions
-kotlin = "1.9.21"
+kotlin = "2.1.0"
 
 [libraries]
 
