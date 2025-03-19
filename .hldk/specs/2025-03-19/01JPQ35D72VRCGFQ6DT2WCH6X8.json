@@ -1,0 +1,24 @@
+{
+  "spec": "When building locally create local maven artefacts (jar file and sources) \nthe artefact should be org.incept5:correlation:1.0.0-SNAPSHOT\nwhen pushing commits to main then the maven artefacts should be published to \"https://jitpack.io\" and the build number should be incremented on successful build to org.incept5:correlation:1.0.<buildNumber>",
+  "commitMessage": "Configure Maven publishing for local builds and JitPack integration\n\n- Fixed group ID from \"orge.incept5\" to \"org.incept5\"\n- Set artifact ID to \"correlation\" (was \"correlation-lib\")\n- Added source and javadoc JAR generation\n- Added JitPack configuration\n- Updated README with installation instructions\n- Added JitPack repository to dependency resolution\n- Added \"install\" task for JitPack compatibility",
+  "stats": {
+    "inputTokens": 80283,
+    "cacheWriteTokens": 6306,
+    "cacheReadTokens": 100896,
+    "outputTokens": 4233,
+    "totalTokens": null,
+    "cost": 0.22825800000000002,
+    "currency": "gbp",
+    "processingMillis": 87158,
+    "git": {
+      "filesChanged": 21,
+      "insertions": 917,
+      "deletions": 0,
+      "linesChanged": 917,
+      "testFilesChanged": 2,
+      "testInsertions": 72,
+      "testDeletions": 0,
+      "testLinesChanged": 72
+    }
+  }
+}

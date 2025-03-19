@@ -1,0 +1,24 @@
+{
+  "spec": "commit the code to the existing repo https://github.com/Incept5/correlation",
+  "commitMessage": "Initial commit of correlation library",
+  "stats": {
+    "inputTokens": 32520,
+    "cacheWriteTokens": 6306,
+    "cacheReadTokens": 69366,
+    "outputTokens": 886,
+    "totalTokens": null,
+    "cost": 0.0831375,
+    "currency": "gbp",
+    "processingMillis": 48756,
+    "git": {
+      "filesChanged": 19,
+      "insertions": 856,
+      "deletions": 0,
+      "linesChanged": 856,
+      "testFilesChanged": 2,
+      "testInsertions": 72,
+      "testDeletions": 0,
+      "testLinesChanged": 72
+    }
+  }
+}
