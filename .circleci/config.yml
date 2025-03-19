@@ -48,6 +48,13 @@ jobs:
             git tag -a "v${VERSION}" -m "Release version ${VERSION}"
             git push origin "v${VERSION}"
             
+            # Build locally with the correct version
+            ./gradlew clean build publishToMavenLocal -Pversion=${VERSION} -Pgroup=com.github.incept5
+            
+            # Verify local artifacts
+            echo "Verifying local artifacts:"
+            find ~/.m2/repository -name "correlation*" | grep "com/github/incept5" | sort
+            
             # Trigger JitPack build by making a request to the JitPack URL with the version tag
             curl -s "https://jitpack.io/com/github/incept5/correlation/${VERSION}/correlation-${VERSION}.pom" || true
             

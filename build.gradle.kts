@@ -7,15 +7,28 @@
  */
 
 
+// Always set a default version first
+version = "1.0.0-SNAPSHOT"  // Default version
+
 // For local builds, use 0-SNAPSHOT. For CI builds, use the build number from CircleCI
 // If a specific version is provided (e.g., from JitPack), use that instead
 val providedVersion = findProperty("version") as? String
-val buildNumber = findProperty("buildNumber") as? String ?: "0-SNAPSHOT"
-version = providedVersion ?: "1.0.$buildNumber"
+val buildNumber = findProperty("buildNumber") as? String
+
+// Override default version if parameters are provided
+if (providedVersion != null && providedVersion.isNotEmpty()) {
+    version = providedVersion
+} else if (buildNumber != null && buildNumber.isNotEmpty()) {
+    version = "1.0.$buildNumber"
+}
 
 // Always ensure we have a valid group ID
 val providedGroup = findProperty("group") as? String
 group = if (providedGroup.isNullOrBlank()) "com.github.incept5" else providedGroup
+
+// Log the group and version for debugging
+println("Building with group: $group")
+println("Building with version: $version")
 
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
@@ -68,7 +81,11 @@ kotlin {
 publishing {
     publications {
         create<MavenPublication>("maven") {
+            // Explicitly set groupId, artifactId, and version
+            groupId = project.group.toString()
             artifactId = "correlation"
+            version = project.version.toString()
+            
             from(components["java"])
             
             // POM information is automatically included with sources and javadoc

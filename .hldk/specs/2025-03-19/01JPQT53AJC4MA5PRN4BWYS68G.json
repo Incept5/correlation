@@ -1,0 +1,24 @@
+{
+  "spec": "the build artefacts in the local maven repository are built as com.github.incept5.correlation.unspecified instead of com.github.incept5.correlation.1.0.0-SNAPSHOT",
+  "commitMessage": "Fix Maven artifact versioning in local and JitPack builds\n\n1. Updated build.gradle.kts to always set a default version (1.0.0-SNAPSHOT)\n2. Modified the version handling logic to ensure it's never \"unspecified\"\n3. Updated jitpack.yml to handle version extraction more robustly\n4. Enhanced CircleCI config to verify local artifacts before triggering JitPack",
+  "stats": {
+    "inputTokens": 310671,
+    "cacheWriteTokens": 0,
+    "cacheReadTokens": 144364,
+    "outputTokens": 5670,
+    "totalTokens": null,
+    "cost": 0.76279725,
+    "currency": "gbp",
+    "processingMillis": 150820,
+    "git": {
+      "filesChanged": 3,
+      "insertions": 36,
+      "deletions": 4,
+      "linesChanged": 36,
+      "testFilesChanged": 0,
+      "testInsertions": 0,
+      "testDeletions": 0,
+      "testLinesChanged": 0
+    }
+  }
+}
