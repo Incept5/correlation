@@ -1,0 +1,24 @@
+{
+  "spec": "Add a test in the sample-quarkus-correlation module that:\ninvokes the sample controller and sets an X-Correlation-ID header in the request\nthe test should invoke that the response contains the same header with the same correlationId\nanother test should perform the same operation but without setting the correlationId in the request header and assert that a new correlationid was set in the response header",
+  "commitMessage": "Add correlation ID filter tests for Quarkus sample\n\n- Added CorrelationIdFilterTest.kt with two test cases:\n  1. Test with a provided correlation ID in the request header\n  2. Test without a correlation ID in the request header\n- Tests verify that the correlation ID is properly propagated or generated",
+  "stats": {
+    "inputTokens": 17994,
+    "cacheWriteTokens": 6562,
+    "cacheReadTokens": 45934,
+    "outputTokens": 1457,
+    "totalTokens": null,
+    "cost": 0.056877750000000005,
+    "currency": "gbp",
+    "processingMillis": 59798,
+    "git": {
+      "filesChanged": 2,
+      "insertions": 86,
+      "deletions": 5,
+      "linesChanged": 86,
+      "testFilesChanged": 1,
+      "testInsertions": 55,
+      "testDeletions": 0,
+      "testLinesChanged": 55
+    }
+  }
+}
