@@ -61,25 +61,48 @@ The `sample-quarkus-correlation` module demonstrates how to use the CorrelationI
 
 ### JAX-RS Filter for Correlation ID
 
-The sample includes a `CorrelationIdFilter` that implements `ContainerRequestFilter` to:
+The sample includes a `CorrelationIdFilter` that implements both `ContainerRequestFilter` and `ContainerResponseFilter` to:
 
 1. Extract the correlation ID from the `X-Correlation-ID` header if present
 2. Generate a new correlation ID if none exists
 3. Set the correlation ID in the thread-local context using `CorrelationId.setId()`
-4. Add the correlation ID back to the request headers
+4. Add the correlation ID to the request headers
+5. Add the correlation ID to the response headers
 
 ```kotlin
 @Provider
-class CorrelationIdFilter : ContainerRequestFilter {
+@Priority(Priorities.HEADER_DECORATOR)
+class CorrelationIdFilter : ContainerRequestFilter, ContainerResponseFilter {
+
+    companion object {
+        const val CORRELATION_ID_HEADER = "X-Correlation-ID"
+        private const val CORRELATION_ID_PROPERTY = "correlationId"
+    }
+
     override fun filter(requestContext: ContainerRequestContext) {
         // Get or create a new correlation ID
-        val correlationId = requestContext.headers.getFirst("X-Correlation-ID") ?: CorrelationId.getId()
-        
+        val correlationId = requestContext.headers.getFirst(CORRELATION_ID_HEADER)
+            ?: CorrelationId.getId()
+            ?: UUID.randomUUID().toString()
+
         // Set the correlation ID in the thread local context
         CorrelationId.setId(correlationId)
-        
+
+        // Store the correlation ID in the request property for later use in the response filter
+        requestContext.setProperty(CORRELATION_ID_PROPERTY, correlationId)
+
         // Add or update the correlation ID header in the request
-        requestContext.headers.putSingle("X-Correlation-ID", correlationId)
+        requestContext.headers.putSingle(CORRELATION_ID_HEADER, correlationId)
+    }
+
+    override fun filter(requestContext: ContainerRequestContext, responseContext: ContainerResponseContext) {
+        // Get the correlation ID from the request property
+        val correlationId = requestContext.getProperty(CORRELATION_ID_PROPERTY) as? String
+            ?: CorrelationId.getId()
+            ?: UUID.randomUUID().toString()
+
+        // Add the correlation ID to the response headers
+        responseContext.headers.putSingle(CORRELATION_ID_HEADER, correlationId)
     }
 }
 ```
@@ -99,7 +122,7 @@ This format includes `%X{correlationId}` to display the correlation ID from the 
 
 ### Usage in Controllers
 
-Once the filter is in place, any controller in the application will automatically have access to the correlation ID in logs:
+Once the filter is in place, any controller in the application will automatically have access to the correlation ID in logs. Additionally, all responses will include the X-Correlation-ID header:
 
 ```kotlin
 @Path("/hello")
@@ -114,6 +137,30 @@ class SampleController {
     }
 }
 ```
+
+### Testing the Correlation ID
+
+You can test the correlation ID functionality with the following approaches:
+
+1. **Providing a correlation ID in the request**:
+   ```bash
+   curl -H "X-Correlation-ID: my-custom-id-123" http://localhost:8080/hello -v
+   ```
+   The response will include the same correlation ID in the headers:
+   ```
+   < HTTP/1.1 200 OK
+   < X-Correlation-ID: my-custom-id-123
+   ```
+
+2. **Without providing a correlation ID**:
+   ```bash
+   curl http://localhost:8080/hello -v
+   ```
+   The response will include a generated correlation ID in the headers:
+   ```
+   < HTTP/1.1 200 OK
+   < X-Correlation-ID: 550e8400-e29b-41d4-a716-446655440000
+   ```
 
 ## Spring Boot Implementation
 
@@ -206,7 +253,7 @@ logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{3
 
 ### Usage in Controllers
 
-Once the filter is in place, any controller in the application will automatically have access to the correlation ID in logs:
+Once the filter is in place, any controller in the application will automatically have access to the correlation ID in logs. Additionally, all responses will include the X-Correlation-ID header:
 
 ```kotlin
 import org.slf4j.LoggerFactory
@@ -225,6 +272,30 @@ class HelloController {
     }
 }
 ```
+
+### Testing the Correlation ID
+
+You can test the correlation ID functionality with the following approaches:
+
+1. **Providing a correlation ID in the request**:
+   ```bash
+   curl -H "X-Correlation-ID: my-custom-id-123" http://localhost:8080/hello -v
+   ```
+   The response will include the same correlation ID in the headers:
+   ```
+   < HTTP/1.1 200 OK
+   < X-Correlation-ID: my-custom-id-123
+   ```
+
+2. **Without providing a correlation ID**:
+   ```bash
+   curl http://localhost:8080/hello -v
+   ```
+   The response will include a generated correlation ID in the headers:
+   ```
+   < HTTP/1.1 200 OK
+   < X-Correlation-ID: 550e8400-e29b-41d4-a716-446655440000
+   ```
 
 ### WebClient Support (Optional)
 
